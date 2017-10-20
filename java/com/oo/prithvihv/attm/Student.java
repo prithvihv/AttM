@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Student extends AppCompatActivity {
 
@@ -28,6 +30,11 @@ public class Student extends AppCompatActivity {
 
     private ListView Attlist;
     private ArrayAdapter<String> listAdapter;
+
+
+    List<String> Att=new ArrayList<String>();
+    String[] Attar;
+
     int counter=0;
     //database accessing
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -35,43 +42,51 @@ public class Student extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
         Attlist=(ListView)findViewById(R.id.Attlist);
         find =(Button)findViewById(R.id.find);
         rollNo =(EditText)findViewById(R.id.rollNo);
-        DS=(TextView) findViewById(R.id.DS);
-        MATH3=(TextView) findViewById(R.id.MATH3);
+
+
         find.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                // Read from the database
-                counter=0;
+
                 final String roll=rollNo.getText().toString();
                 myRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for( DataSnapshot snapshot:dataSnapshot.getChildren()){
-                            Log.d(TAG, "Valueof  snapshot in loop is is:      " + snapshot.child(roll));
-                            switch (counter)
-                            {
-                                case 0:DS.setText( snapshot.getKey() + " : "+snapshot.child(roll).getValue().toString()); break;
-                                case 1:MATH3.setText(snapshot.getKey() + " : "+snapshot.child(roll).getValue().toString());break;
-                            }
-                            counter++;
+                            long attClasses=(long)snapshot.child(roll).getValue();
+                            long totalClasses=(long)snapshot.child("TotalClass").getValue();
+                            double percentage=((double)attClasses/totalClasses)*100;
+                            String sample=snapshot.getKey()+ " : " + snapshot.child(roll).getValue().toString() + " " + percentage + "% ";
+                            Log.d(TAG, "Valueof  snapshot in loop is is:      " + sample);
+                            Att.add(sample);
                         }
-//                            Log.d(TAG, "Valueof  snapshot in loop is is:      " + snapshot);
+                        Attar = new String[Att.size()];
+                        Attar = Att.toArray(Attar);
+                        gListview();
+//                      Log.d(TAG, "Valueof  snapshot in loop is is:      " + snapshot);
                     }
-
                     @Override
                     public void onCancelled(DatabaseError error) {
                         // Failed to read value
                         Log.w(TAG, "Failed to read value.", error.toException());
                     }
+
                 });
             }
         });
 
 
     }
+    private void gListview(){
+
+        ListAdapter Attapt = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,Attar);
+        Attlist.setAdapter(Attapt);
+    }
+
 }
