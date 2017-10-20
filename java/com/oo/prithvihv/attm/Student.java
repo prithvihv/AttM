@@ -38,7 +38,7 @@ public class Student extends AppCompatActivity {
     int counter=0;
     //database accessing
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("CSE/2016/A");
+    DatabaseReference myRef = database.getReference("DSATM/2016/CSE/");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +58,13 @@ public class Student extends AppCompatActivity {
                 myRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onDataChange:before loop " + dataSnapshot);
                         for( DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            Log.d(TAG, "onDataChange: "+ snapshot);
                             long attClasses=(long)snapshot.child(roll).getValue();
                             long totalClasses=(long)snapshot.child("TotalClass").getValue();
                             double percentage=((double)attClasses/totalClasses)*100;
-                            String sample=snapshot.getKey()+ " : " + snapshot.child(roll).getValue().toString() + " " + percentage + "% ";
+                            String sample="AttendedClasses : "+snapshot.getKey()+ " : " + snapshot.child(roll).getValue().toString() + " " + percentage + "% ";
                             Log.d(TAG, "Valueof  snapshot in loop is is:      " + sample);
                             Att.add(sample);
                         }

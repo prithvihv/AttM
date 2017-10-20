@@ -7,8 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +26,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class Login extends AppCompatActivity {
+
+
+
 
     //Andriod studio elements
     private Button signIn;
@@ -33,9 +41,15 @@ public class Login extends AppCompatActivity {
     private EditText userNameF;
     private EditText passwordF;
 
+    //after login
+    private ListView SubjectsListV;
+    ArrayList<String> subjects=null;
+    String[] subjectsArr=null;
+
+
     //database accessing
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("CSE/2016/A/MATH3/TotalClass");
+    DatabaseReference myRef = database.getReference("DSATM/2016/Course/CSE/MATH3/TotalClass");
 
     //authentication
     private FirebaseAuth mAuth;
@@ -54,9 +68,10 @@ public class Login extends AppCompatActivity {
         signIn = (Button) findViewById(R.id.clickfirebase);
         studentButton=(Button) findViewById(R.id.studentButton);
         statusUpdate = (TextView) findViewById(R.id.statusView);
+        SubjectsListV=(ListView)findViewById(R.id.subjects);
         final EditText userNameF = (EditText) findViewById(R.id.userName);
         final EditText passwordF = (EditText) findViewById(R.id.password);
-
+        SubjectsListV.setVisibility(View.INVISIBLE);
 
         //signIn button
         signIn.setOnClickListener(new View.OnClickListener(){
@@ -110,6 +125,45 @@ public class Login extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
+    private void updateUI(final FirebaseUser user){
+        //UI changesV
+        // iew root = findViewById(R.id.main);
+        Log.d(TAG, "updateUI: :"+ user.getUid());
+//        signIn.setVisibility(View.GONE);
+//        studentButton.setVisibility(View.INVISIBLE);
+//        statusUpdate.setVisibility(View.INVISIBLE);
+//        userNameF.setVisibility(View.INVISIBLE);
+//        passwordF.setVisibility(View.INVISIBLE);
+//        SubjectsListV.setVisibility(View.VISIBLE);
+        Log.d(TAG, "end of updateUI");
+
+//        myRef = database.getReference("DSATM/AccessID");
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for( DataSnapshot snapshot:dataSnapshot.getChildren()){
+//                   if((snapshot.getKey()).equals(user.getUid()))
+//                   {
+//                       for(DataSnapshot snappshot:snapshot.getChildren())
+//                       {
+//                           subjects.add(snappshot.getValue().toString());
+//                       }
+//                   }
+//                }
+//                subjectsArr = new String[subjects.size()];
+//                subjectsArr = subjects.toArray(subjectsArr);
+//                gListview();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//                Log.w(TAG, "Failed to read value.", error.toException());
+//            }
+//
+//        });
+    }
     private void signInFunction(String email, String password) {
         Log.d(TAG, "signIn: email" + email);
         Log.d(TAG, "signIn: password" + password);
@@ -122,7 +176,7 @@ public class Login extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
+                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -139,4 +193,8 @@ public class Login extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void gListview(){
+        ListAdapter Attapt = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,subjectsArr);
+        SubjectsListV.setAdapter(Attapt);
+    }
 }
