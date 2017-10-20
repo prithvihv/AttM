@@ -42,8 +42,7 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     //Intent
-    //Intent studentIntent=new Intent(this,Student.class);
-
+//    Intent StudentIntent = new Intent(Login.this,Student.class);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate is running ");
@@ -69,13 +68,15 @@ public class Login extends AppCompatActivity {
         });
 
         //Student button
-//        studentButton.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view) {
-//                //starting activity
+        studentButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                //starting activity
 //                startActivity(Student);
-//            }
-//        });
+                //couldnt make intent work without new class
+                studentIntent();
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -95,17 +96,6 @@ public class Login extends AppCompatActivity {
             }
         };
     }
-
-//    signIn.OnClickListener(new View.OnClickListener(){
-//        //returning username and password from field
-//        String email =  userNameF.getText().toString();
-//        String password =  passwordF.getText().toString();
-//        @Override
-//        public void onClick(View view) {
-//            Log.d(TAG, "Clicklistener " + this + "password" + password);
-//            signInFunction(email,password);
-//        }
-//    })
 
     @Override
     public void onStart() {
@@ -143,6 +133,10 @@ public class Login extends AppCompatActivity {
                     }
                 });
         // [END sign_in_with_email]
+    }
+    public void studentIntent() {
+        Intent intent = new Intent(this, Student.class);
+        startActivity(intent);
     }
 
 }
