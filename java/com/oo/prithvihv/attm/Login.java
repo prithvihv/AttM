@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,11 +28,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Login extends AppCompatActivity {
 
-
-
+    //variables
+    String Attsubject=null;
 
     //Andriod studio elements
     private Button signIn;
@@ -41,9 +43,10 @@ public class Login extends AppCompatActivity {
     private EditText userNameF;
     private EditText passwordF;
 
+
     //after login
     private ListView SubjectsListV;
-    ArrayList<String> subjects=null;
+    List<String> subjects=new ArrayList<String>();
     String[] subjectsArr=null;
 
 
@@ -69,8 +72,8 @@ public class Login extends AppCompatActivity {
         studentButton=(Button) findViewById(R.id.studentButton);
         statusUpdate = (TextView) findViewById(R.id.statusView);
         SubjectsListV=(ListView)findViewById(R.id.subjects);
-        final EditText userNameF = (EditText) findViewById(R.id.userName);
-        final EditText passwordF = (EditText) findViewById(R.id.password);
+        userNameF = (EditText) findViewById(R.id.userName);
+        passwordF = (EditText) findViewById(R.id.password);
         SubjectsListV.setVisibility(View.INVISIBLE);
 
         //signIn button
@@ -126,43 +129,54 @@ public class Login extends AppCompatActivity {
         }
     }
 
+    private void page2(){
+        SubjectsListV.setVisibility(View.GONE);
+    }
     private void updateUI(final FirebaseUser user){
         //UI changesV
-        // iew root = findViewById(R.id.main);
-        Log.d(TAG, "updateUI: :"+ user.getUid());
-//        signIn.setVisibility(View.GONE);
-//        studentButton.setVisibility(View.INVISIBLE);
-//        statusUpdate.setVisibility(View.INVISIBLE);
-//        userNameF.setVisibility(View.INVISIBLE);
-//        passwordF.setVisibility(View.INVISIBLE);
-//        SubjectsListV.setVisibility(View.VISIBLE);
-        Log.d(TAG, "end of updateUI");
+        signIn.setVisibility(View.GONE);
+        studentButton.setVisibility(View.GONE);
+        statusUpdate.setVisibility(View.GONE);
+        userNameF.setVisibility(View.GONE);
+        passwordF.setVisibility(View.GONE);
+        SubjectsListV.setVisibility(View.VISIBLE);
 
-//        myRef = database.getReference("DSATM/AccessID");
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for( DataSnapshot snapshot:dataSnapshot.getChildren()){
-//                   if((snapshot.getKey()).equals(user.getUid()))
-//                   {
-//                       for(DataSnapshot snappshot:snapshot.getChildren())
-//                       {
-//                           subjects.add(snappshot.getValue().toString());
-//                       }
-//                   }
-//                }
-//                subjectsArr = new String[subjects.size()];
-//                subjectsArr = subjects.toArray(subjectsArr);
-//                gListview();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Log.w(TAG, "Failed to read value.", error.toException());
-//            }
-//
-//        });
+        myRef = database.getReference("DSATM/AccessID");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for( DataSnapshot snapshot:dataSnapshot.getChildren()){
+                   if((snapshot.getKey()).equals(user.getUid()))
+                   {
+                       Log.d(TAG, "onDataChange: if"+ snapshot);
+                       for(DataSnapshot snappshot:snapshot.getChildren())
+                       {
+                           subjects.add(snappshot.getValue().toString());
+                       }
+                   }
+                }
+                subjectsArr = new String[subjects.size()];
+                subjectsArr = subjects.toArray(subjectsArr);
+                gListview();
+                SubjectsListV.setOnItemClickListener(
+                        new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                Attsubject=String.valueOf(adapterView.getItemAtPosition(i));
+                                Log.d(TAG, "onItemClick: " + Attsubject);
+                                page2();
+                            }
+                        }
+                );
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+
+        });
     }
     private void signInFunction(String email, String password) {
         Log.d(TAG, "signIn: email" + email);

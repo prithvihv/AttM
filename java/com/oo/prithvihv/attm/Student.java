@@ -64,8 +64,8 @@ public class Student extends AppCompatActivity {
                             long attClasses=(long)snapshot.child(roll).getValue();
                             long totalClasses=(long)snapshot.child("TotalClass").getValue();
                             double percentage=((double)attClasses/totalClasses)*100;
-                            String sample="AttendedClasses : "+snapshot.getKey()+ " : " + snapshot.child(roll).getValue().toString() + " " + percentage + "% ";
-                            Log.d(TAG, "Valueof  snapshot in loop is is:      " + sample);
+                            String sample=snapshot.getKey()+ " AttendedClasses : " + snapshot.child(roll).getValue().toString() + "       " +" " + percentage + "% ";
+                            Log.d(TAG, sample);
                             Att.add(sample);
                         }
                         Attar = new String[Att.size()];
