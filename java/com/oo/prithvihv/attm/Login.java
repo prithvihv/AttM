@@ -32,8 +32,15 @@ import java.util.List;
 
 public class Login extends AppCompatActivity {
 
-    //variables
+    //try variables
+    final Context context = this;
+
+
+    //variables for page2
     String Attsubject=null;
+        //DS
+        ArrayList<Attmodel> data=new ArrayList<Attmodel>();
+
 
     //Andriod studio elements
     private Button signIn;
@@ -58,8 +65,6 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    //Intent
-//    Intent StudentIntent = new Intent(Login.this,Student.class);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate is running ");
@@ -80,7 +85,6 @@ public class Login extends AppCompatActivity {
         signIn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                //returning username and password from field
                 signInFunction(userNameF.getText().toString(), passwordF.getText().toString());
             }
         });
@@ -89,9 +93,6 @@ public class Login extends AppCompatActivity {
         studentButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                //starting activity
-//                startActivity(Student);
-                //couldnt make intent work without new class
                 studentIntent();
             }
         });
@@ -130,7 +131,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void page2(){
-        SubjectsListV.setVisibility(View.GONE);
+
     }
     private void updateUI(final FirebaseUser user){
         //UI changesV
@@ -164,7 +165,11 @@ public class Login extends AppCompatActivity {
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 Attsubject=String.valueOf(adapterView.getItemAtPosition(i));
                                 Log.d(TAG, "onItemClick: " + Attsubject);
+                                Toast.makeText(getApplicationContext(), "what?", Toast.LENGTH_SHORT).show();
                                 page2();
+                                Intent detailIntent = new Intent(context, ATT.class);
+                                detailIntent.putExtra("Subject", Attsubject);
+                                startActivity(detailIntent);
                             }
                         }
                 );
