@@ -7,10 +7,11 @@ package com.oo.prithvihv.attm;
 public class Attmodel {
     String roll;
     Boolean checked;
-
-    public Attmodel(String roll, Boolean checked) {
+    long classes;
+    public Attmodel(String roll, Boolean checked,long classes) {
         this.roll = roll;
         this.checked = checked;
+        this.classes=classes;
     }
 
 }

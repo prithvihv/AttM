@@ -130,9 +130,6 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    private void page2(){
-
-    }
     private void updateUI(final FirebaseUser user){
         //UI changesV
         signIn.setVisibility(View.GONE);
@@ -165,11 +162,15 @@ public class Login extends AppCompatActivity {
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 Attsubject=String.valueOf(adapterView.getItemAtPosition(i));
                                 Log.d(TAG, "onItemClick: " + Attsubject);
-                                Toast.makeText(getApplicationContext(), "what?", Toast.LENGTH_SHORT).show();
-                                page2();
                                 Intent detailIntent = new Intent(context, ATT.class);
                                 detailIntent.putExtra("Subject", Attsubject);
                                 startActivity(detailIntent);
+                                signIn.setVisibility(View.VISIBLE);
+                                studentButton.setVisibility(View.VISIBLE);
+                                statusUpdate.setVisibility(View.VISIBLE);
+                                userNameF.setVisibility(View.VISIBLE);
+                                passwordF.setVisibility(View.VISIBLE);
+                                SubjectsListV.setVisibility(View.GONE);
                             }
                         }
                 );
@@ -216,4 +217,5 @@ public class Login extends AppCompatActivity {
         ListAdapter Attapt = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,subjectsArr);
         SubjectsListV.setAdapter(Attapt);
     }
+
 }

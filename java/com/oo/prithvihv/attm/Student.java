@@ -1,9 +1,11 @@
 package com.oo.prithvihv.attm;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,8 +27,6 @@ public class Student extends AppCompatActivity {
     private static final String TAG = "MyActivity";
     private Button find;
     private EditText rollNo;
-    private TextView DS;
-    private TextView MATH3;
 
     private ListView Attlist;
     private ArrayAdapter<String> listAdapter;
@@ -34,7 +34,6 @@ public class Student extends AppCompatActivity {
 
     List<String> Att=new ArrayList<String>();
     String[] Attar;
-
     int counter=0;
     //database accessing
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -60,13 +59,15 @@ public class Student extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d(TAG, "onDataChange:before loop " + dataSnapshot);
                         for( DataSnapshot snapshot:dataSnapshot.getChildren()){
-                            Log.d(TAG, "onDataChange: "+ snapshot);
-                            long attClasses=(long)snapshot.child(roll).getValue();
-                            long totalClasses=(long)snapshot.child("TotalClass").getValue();
-                            double percentage=((double)attClasses/totalClasses)*100;
-                            String sample=snapshot.getKey()+ " AttendedClasses : " + snapshot.child(roll).getValue().toString() + "       " +" " + percentage + "% ";
-                            Log.d(TAG, sample);
-                            Att.add(sample);
+                            if(snapshot.child(roll)!=null) {
+                                Log.d(TAG, "onDataChange: " + snapshot);
+                                long attClasses = (long) snapshot.child(roll).getValue();
+                                long totalClasses = (long) snapshot.child("TotalClass").getValue();
+                                double percentage = ((double) attClasses / totalClasses) * 100;
+                                String sample = snapshot.getKey() + " AttendedClasses : " + snapshot.child(roll).getValue().toString() + "       " + " " + percentage + "% ";
+                                Log.d(TAG, sample);
+                                Att.add(sample);
+                            }
                         }
                         Attar = new String[Att.size()];
                         Attar = Att.toArray(Attar);
@@ -80,6 +81,10 @@ public class Student extends AppCompatActivity {
                     }
 
                 });
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
 
@@ -90,5 +95,6 @@ public class Student extends AppCompatActivity {
         ListAdapter Attapt = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,Attar);
         Attlist.setAdapter(Attapt);
     }
+
 
 }
